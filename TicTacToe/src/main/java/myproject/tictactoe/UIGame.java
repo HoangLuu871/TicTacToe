@@ -88,7 +88,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
         chatFeildScroll = new javax.swing.JScrollPane();
         chatField = new javax.swing.JTextArea();
         typeBox = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tic Tac Toe");
@@ -131,9 +131,9 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
         getContentPane().add(typeBox);
         typeBox.setBounds(710, 590, 450, 40);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Admin\\OneDrive\\Documents\\NetBeansProjects\\TicTacToe\\background.png")); // NOI18N
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(0, -10, 1210, 720);
+        background.setIcon(new javax.swing.ImageIcon("C:\\Users\\Admin\\OneDrive\\Documents\\NetBeansProjects\\TicTacToe\\background.png")); // NOI18N
+        getContentPane().add(background);
+        background.setBounds(0, -10, 1210, 720);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -183,10 +183,10 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel background;
     private javax.swing.JScrollPane chatFeildScroll;
     private javax.swing.JTextArea chatField;
     private javax.swing.JPanel gamePanel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField typeBox;
     // End of variables declaration//GEN-END:variables
 }
