@@ -22,39 +22,36 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
         //if turn % 2 == 0 turn X, else turn O)//if you want to swap turn, reverse it
         for (int i = 0; i < game.height; i++) {
             for (int j = 0; j < game.width; j++) {
-                if (e.getSource() == game.box[i][j] 
+                // check object to string because its easy to send into socket
+                if (e.getSource().toString().equals(game.box[i][j].toString())
                         && game.box[i][j].getText() != "X" 
                         && game.box[i][j].getText() != "O") {
+                    //System.out.println(e.getSource());
+                    
                     if (game.turn %2 == 0) {
                         game.box[i][j].setText("X");
                         game.box[i][j].setFont(new java.awt.Font("Stabillo Medium", 1, 23));
                         game.box[i][j].setForeground(Color.red);
                         game.turn++;
+                        
                         if (game.checkWin(i, j, game.box[i][j].getText())) {
                             JOptionPane.showMessageDialog(null, "X win! Restart?", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                             game.turn = 0;
-                            for (int i1 = 0; i1 < game.height; i1++) {
-                                for (int j1 = 0; j1 < game.width; j1++) {
-                                    game.box[i1][j1].setText("");
-                                    game.box[i1][j1].setBackground(Color.white);
-                                }
-                            }
+                            game.clearMap();
                         }
+                        
                     } else {
                         game.box[i][j].setText("O");
                         game.box[i][j].setFont(new java.awt.Font("Stabillo Medium", 1, 23));
                         game.box[i][j].setForeground(Color.green);
                         game.turn++;
+                        
                         if (game.checkWin(i, j, game.box[i][j].getText())) {
                             JOptionPane.showMessageDialog(null, "O win! Restart?", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                             game.turn = 0;
-                            for (int i1 = 0; i1 < game.height; i1++) {
-                                for (int j1 = 0; j1 < game.width; j1++) {
-                                    game.box[i1][j1].setText("");
-                                    game.box[i1][j1].setBackground(Color.white);
-                                }
-                            }
+                            game.clearMap();
                         }
+                        
                     }
                 }
             }
@@ -110,7 +107,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
         chatField.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         chatField.setLineWrap(true);
         chatField.setRows(5);
-        chatField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        chatField.setBorder(javax.swing.BorderFactory.createLineBorder(null));
         chatField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         chatField.setFocusable(false);
         chatField.setSelectionColor(new java.awt.Color(255, 255, 255));
@@ -120,7 +117,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
         chatFeildScroll.setBounds(710, 380, 450, 200);
 
         typeBox.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        typeBox.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        typeBox.setBorder(javax.swing.BorderFactory.createLineBorder(null));
         typeBox.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         typeBox.setSelectionColor(new java.awt.Color(0, 0, 0));
         typeBox.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -130,8 +127,6 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
         });
         getContentPane().add(typeBox);
         typeBox.setBounds(710, 590, 450, 40);
-
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Admin\\OneDrive\\Documents\\NetBeansProjects\\TicTacToe\\background.png")); // NOI18N
         getContentPane().add(jLabel1);
         jLabel1.setBounds(0, -10, 1210, 720);
 
@@ -150,37 +145,37 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UIGame().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(UIGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new UIGame().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane chatFeildScroll;
