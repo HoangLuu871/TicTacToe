@@ -5,60 +5,75 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+
+import myproject.tictactoe.Utils.utils;
 
 /**
  *
  * @author HLuu
  */
-public class UIGame extends javax.swing.JFrame implements ActionListener{
+public class UIGame extends javax.swing.JFrame implements ActionListener {
+
     public static TicTacToe game = new TicTacToe();
-    
+    private final Player player;
+
     //action when play
     public void actionPerformed(ActionEvent e) {
         game.COUNT = 1;
+
+        // if not player turn than stop function
+        if (!player.isTurn) {
+            return;
+        }
+
         //if turn % 2 == 0 turn X, else turn O)//if you want to swap turn, reverse it
         for (int i = 0; i < game.height; i++) {
             for (int j = 0; j < game.width; j++) {
                 // check object to string because its easy to send into socket
-                if (e.getSource().toString().equals(game.box[i][j].toString())
-                        && game.box[i][j].getText() != "X" 
+                String coords = utils.getCoords(e.getSource().toString());
+                System.out.println(coords);
+                if (coords.equals(utils.getCoords(game.box[i][j].toString()))
+                        && game.box[i][j].getText() != "X"
                         && game.box[i][j].getText() != "O") {
-                    //System.out.println(e.getSource());
-                    
-                    if (game.turn %2 == 0) {
-                        game.box[i][j].setText("X");
-                        game.box[i][j].setFont(new java.awt.Font("Stabillo Medium", 1, 23));
-                        game.box[i][j].setForeground(Color.red);
-                        game.turn++;
-                        
-                        if (game.checkWin(i, j, game.box[i][j].getText())) {
-                            JOptionPane.showMessageDialog(null, "X win! Restart?", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                            game.turn = 0;
-                            game.clearMap();
-                        }
-                        
-                    } else {
-                        game.box[i][j].setText("O");
-                        game.box[i][j].setFont(new java.awt.Font("Stabillo Medium", 1, 23));
-                        game.box[i][j].setForeground(Color.green);
-                        game.turn++;
-                        
-                        if (game.checkWin(i, j, game.box[i][j].getText())) {
-                            JOptionPane.showMessageDialog(null, "O win! Restart?", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                            game.turn = 0;
-                            game.clearMap();
-                        }
-                        
+                    System.out.println(e.getSource());
+
+                    game.box[i][j].setText(this.player.symbol);
+                    game.box[i][j].setFont(new java.awt.Font("Stabillo Medium", 1, 23));
+                    game.box[i][j].setForeground(this.player.playerColor);
+                    game.turn++;
+
+                    try {
+                        // broadcast move to other player
+                        this.player.makeMove(coords);
+                    } catch (IOException ex) {
+                        Logger.getLogger(UIGame.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
+                    if (game.checkWin(i, j, game.box[i][j].getText())) {
+                        matchResults(this.player.symbol);
+                        
+                        try {
+                            this.player.sendWinResult();
+                        } catch (IOException ex) {
+                            Logger.getLogger(UIGame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
                 }
             }
         }
     }
-    
-    public UIGame() {
+
+    public UIGame(Player player) {
+        this.player = player;
+        this.player.game = game;
+        System.out.println("helloworld");
         initComponents();
         for (int i = 0; i < game.height; i++) {
             for (int j = 0; j < game.width; j++) {
@@ -70,6 +85,13 @@ public class UIGame extends javax.swing.JFrame implements ActionListener{
             }
         }
         setLocationRelativeTo(null);
+    }
+
+    public void matchResults(String symbol) {
+        String matchInfo = this.player.symbol.equals(symbol) ? "Winner winner chicken dinner" : "Game Over";
+        JOptionPane.showMessageDialog(null, symbol + " win! Restart?", matchInfo, JOptionPane.INFORMATION_MESSAGE);
+        game.turn = 0;
+        game.clearMap();
     }
 
     /**

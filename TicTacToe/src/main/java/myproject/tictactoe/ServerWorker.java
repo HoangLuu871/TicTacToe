@@ -61,7 +61,7 @@ public class ServerWorker extends Thread {
             if (tokens != null && tokens.length > 0) {
                 query = tokens[0];
                 // check login 
-                if (query.equalsIgnoreCase("login")) {
+                if (query.equalsIgnoreCase("login") && !this.isOnline) {
                     validUser = gameServer.getValidUser();
                     // tokens template: "login"
                     this.handleOnline(outputStream, tokens);
@@ -69,6 +69,7 @@ public class ServerWorker extends Thread {
 
                 // if user login, user can use below commands;
                 if (this.isOnline) {
+                    System.out.println("Receive " + query + " from " + this.workerName);
                     if (query.equalsIgnoreCase("move")) {
                         // tokens template: "move text position"
                         this.handleMove(outputStream, tokens);
@@ -78,12 +79,14 @@ public class ServerWorker extends Thread {
                         break;
                     }
                 }
-
             }
+
         }
 
         inputStream.close();
+
         outputStream.close();
+
         clientSocket.close();
     }
 
@@ -96,6 +99,7 @@ public class ServerWorker extends Thread {
         for (ServerWorker worker : workerList) {
             if (!(this.workerName.equalsIgnoreCase(worker.workerName) && !worker.isOnline)) {
                 worker.outputStream.write(onlineMsg.getBytes());
+                worker.outputStream.flush();
             }
         }
 
@@ -113,14 +117,14 @@ public class ServerWorker extends Thread {
             userMsg = checkValidUser(workerName, password);
             System.out.println(userMsg);
             if (!userMsg.equalsIgnoreCase("Invalid User")) {
-                for (ServerWorker worker : workerList) {
-                    worker.outputStream.write(userMsg.getBytes());
-                }
-
+                this.outputStream.write(userMsg.getBytes());
+                this.outputStream.flush();
                 this.isOnline = true;
             } else {
                 this.outputStream.write((userMsg + "\n").getBytes());
+                this.outputStream.flush();
             }
+            System.out.println("Receive " + userMsg);
         }
     }
 
@@ -131,11 +135,13 @@ public class ServerWorker extends Thread {
             String userText = tokens[1];
             String position = tokens[2];
 
-            String moveMsg = "move " + userText + " " + position;
+            String moveMsg = "move " + userText + " " + position + "\n";
 
             for (ServerWorker worker : workerList) {
                 if (!this.workerName.equalsIgnoreCase(worker.workerName)) {
+                    System.out.println("Send to user: " + worker.workerName);
                     worker.outputStream.write(moveMsg.getBytes());
+                    worker.outputStream.flush();
                 }
             }
         }
@@ -144,10 +150,10 @@ public class ServerWorker extends Thread {
 
     private String checkValidUser(String workerName, String password) {
         Pair<String, String> loginInfo = new Pair(workerName, password);
-        
+
         for (Pair<String, String> test : this.validUser) {
             if (test.equals(loginInfo)) {
-                return "Welcome player " + workerName + "\n";
+                return "Welcome player " + workerName + " " + this.clientSymbol + "\n";
             }
         }
 //        if((workerName.equals("son") && password.equals("son")) || (workerName.equals("hoang") && password.equals("hoang"))){

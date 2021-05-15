@@ -1,4 +1,8 @@
-myproject\tictactoe\TicTacToe.class
-myproject\tictactoe\UIGame$2.class
-myproject\tictactoe\UIGame.class
-myproject\tictactoe\UIGame$1.class
+myproject/tictactoe/Game.class
+myproject/tictactoe/Utils/Pair.class
+myproject/tictactoe/Utils/utils.class
+myproject/tictactoe/Player.class
+myproject/tictactoe/Server.class
+myproject/tictactoe/Game$1.class
+myproject/tictactoe/ServerWorker.class
+myproject/tictactoe/ServerMain.class

@@ -5,19 +5,26 @@
  */
 package myproject.tictactoe;
 
+import java.net.ConnectException;
+
 /**
  *
  * @author son
  */
 public class Game {
+
     private int port;
-    private int hostIP;
+    private String hostIP;
+    public Player player;
+
+    Game(int port, String hostIP) {
+        this.port = port;
+        this.hostIP = hostIP;
+    }
+
+    ;
     
-    Game(){
-        
-    };
-    
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -42,11 +49,20 @@ public class Game {
         //</editor-fold>
 //        Server gameServer = new Server("localhost", 3333);
 //        gameServer.start();
-        /* Create and display the form */  
-        
+        /* Create and display the form */
+        Game game = new Game(3333, "localhost");
+
+        game.player = new Player(game.port, game.hostIP);
+
+        game.player.start();
+
+//        if (!game.player.isConnect) {
+//            return;
+//        }
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UIGame().setVisible(true);
+                new UIGame(game.player).setVisible(true);
             }
         });
     }

@@ -24,7 +24,7 @@ public class ServerMain {
         }
         
         // sleep 2s waiting for server
-        Thread.sleep(3000);
+        Thread.sleep(1000);
         
         // message trigger start game in user side
         try {

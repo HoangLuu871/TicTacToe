@@ -76,24 +76,25 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            this.serverSocket = new ServerSocket(this.port, this.maxPlayer);
+            this.serverSocket = new ServerSocket(this.port, this.maxPlayer); // init server socket
             // user database setup
 //            for(Pair<String, String> test: validUser){
 //                System.out.println(test.toString());
 //            }
 
+            // socket listen request from client 
             while (true) {
                 System.out.println("About to accept " + (this.maxPlayer - this.currentNumPlayer) + " client connection");
-                Socket clientServeSocket = serverSocket.accept();
+                Socket clientServeSocket = serverSocket.accept(); // give each client a socket to communicate
 
                 this.currentNumPlayer++;
                 String playerSymbol = playerSymbols[this.currentNumPlayer - 1];
 
                 System.out.println("Accepted connection from " + clientServeSocket);
 
-                ServerWorker worker = new ServerWorker(this, clientServeSocket, playerSymbol);
-                this.workerList.add(worker);
-                worker.start();
+                ServerWorker worker = new ServerWorker(this, clientServeSocket, playerSymbol); // create server socket to communicate with client
+                this.workerList.add(worker); // list server socket to broadcast
+                worker.start(); // start server worker thread for accept multiple client
 
                 if (this.currentNumPlayer == this.maxPlayer) {
                     break;
@@ -117,15 +118,14 @@ public class Server extends Thread {
                 isStart = false;
             }
         }
-        System.out.println(isStart);
         return isStart;
     }
 
     public void triggerStart() throws IOException {
         for (ServerWorker worker : workerList) {
             if (worker.outputStream != null) {
-                worker.outputStream.write(("Start").getBytes());
-
+                worker.outputStream.write(("Start\n").getBytes());
+                worker.outputStream.flush();
             }
         }
     }
