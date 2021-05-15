@@ -19,7 +19,7 @@ public class ServerWorker extends Thread {
 
     private final Socket clientServeSocket;
     private final Server gameServer;
-    private OutputStream outputStream;
+    public OutputStream outputStream;
 
     public String workerName;
     private String password;
@@ -92,7 +92,7 @@ public class ServerWorker extends Thread {
         // remove this worker
         workerList.remove(this);
         this.isOnline = false;
-        String onlineMsg = "User " + this.workerName + " offline\n";
+        String onlineMsg = "offline user " + this.workerName + "\n";
         for (ServerWorker worker : workerList) {
             if (!(this.workerName.equalsIgnoreCase(worker.workerName) && !worker.isOnline)) {
                 worker.outputStream.write(onlineMsg.getBytes());
@@ -131,7 +131,7 @@ public class ServerWorker extends Thread {
             String userText = tokens[1];
             String position = tokens[2];
 
-            String moveMsg = userText + " " + position;
+            String moveMsg = "move " + userText + " " + position;
 
             for (ServerWorker worker : workerList) {
                 if (!this.workerName.equalsIgnoreCase(worker.workerName)) {
@@ -145,14 +145,14 @@ public class ServerWorker extends Thread {
     private String checkValidUser(String workerName, String password) {
         Pair<String, String> loginInfo = new Pair(workerName, password);
         
-//        for (Pair<String, String> test : this.validUser) {
-//            if (test.equals(loginInfo)) {
-//                return "Welcome player " + workerName + "\n";
-//            }
-//        }
-        if((workerName.equals("son") && password.equals("son")) || (workerName.equals("hoang") && password.equals("hoang"))){
-            return "Welcome player " + workerName + "\n";
+        for (Pair<String, String> test : this.validUser) {
+            if (test.equals(loginInfo)) {
+                return "Welcome player " + workerName + "\n";
+            }
         }
+//        if((workerName.equals("son") && password.equals("son")) || (workerName.equals("hoang") && password.equals("hoang"))){
+//            return "Welcome player " + workerName + "\n";
+//        }
 
         return "Invalid User";
 

@@ -43,6 +43,7 @@ public class Game {
 //        Server gameServer = new Server("localhost", 3333);
 //        gameServer.start();
         /* Create and display the form */  
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new UIGame().setVisible(true);

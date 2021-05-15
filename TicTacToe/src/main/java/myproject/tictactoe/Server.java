@@ -20,19 +20,18 @@ public class Server extends Thread {
 
     private int port;
     private String ip;
-    
+
     public static final int maxPlayer = 2; // num player can connect 
     public int currentNumPlayer;
     public String[] playerSymbols = {"X", "O"};
-    
+
     private ServerSocket serverSocket;
-    
-    private ArrayList<ServerWorker> workerList;  
-    
+
+    private ArrayList<ServerWorker> workerList;
+
     private static final String fileName = "userDataBase.txt";
     private HashSet<Pair<String, String>> validUser = new HashSet<Pair<String, String>>();
-    
-    
+
     public Server(String ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -49,18 +48,18 @@ public class Server extends Thread {
     public String getIp() {
         return this.ip;
     }
-    
-    public ArrayList<ServerWorker> getWorkerList(){
+
+    public ArrayList<ServerWorker> getWorkerList() {
         return this.workerList;
     }
-    
-    public HashSet<Pair<String, String>> getValidUser(){
+
+    public HashSet<Pair<String, String>> getValidUser() {
         return this.validUser;
     }
-    
-    private void setValidUser(){
+
+    private void setValidUser() {
         File info = new File(this.fileName);
-        
+
         try {
             Scanner myReader = new Scanner(info);
             while (myReader.hasNextLine()) {
@@ -73,7 +72,7 @@ public class Server extends Thread {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void run() {
         try {
@@ -82,23 +81,25 @@ public class Server extends Thread {
 //            for(Pair<String, String> test: validUser){
 //                System.out.println(test.toString());
 //            }
-            
+
             while (true) {
                 System.out.println("About to accept " + (this.maxPlayer - this.currentNumPlayer) + " client connection");
                 Socket clientServeSocket = serverSocket.accept();
-                
+
                 this.currentNumPlayer++;
-                String playerSymbol = playerSymbols[this.currentNumPlayer];
-                
+                String playerSymbol = playerSymbols[this.currentNumPlayer - 1];
+
                 System.out.println("Accepted connection from " + clientServeSocket);
-                
+
                 ServerWorker worker = new ServerWorker(this, clientServeSocket, playerSymbol);
                 this.workerList.add(worker);
                 worker.start();
-                
-                if(this.currentNumPlayer == this.maxPlayer) break;
+
+                if (this.currentNumPlayer == this.maxPlayer) {
+                    break;
+                }
             }
-            
+
             this.stopServer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,9 +109,25 @@ public class Server extends Thread {
     public void stopServer() throws IOException {
         this.serverSocket.close();
     }
-    
-    public static void main(String args[]) {
-        Server gameServer = new Server("localhost", 3333);
-        gameServer.start();
+
+    public boolean startGame() {
+        boolean isStart = true;
+        for (ServerWorker worker : workerList) {
+            if (!worker.isOnline) {
+                isStart = false;
+            }
+        }
+        System.out.println(isStart);
+        return isStart;
     }
+
+    public void triggerStart() throws IOException {
+        for (ServerWorker worker : workerList) {
+            if (worker.outputStream != null) {
+                worker.outputStream.write(("Start").getBytes());
+
+            }
+        }
+    }
+
 }
