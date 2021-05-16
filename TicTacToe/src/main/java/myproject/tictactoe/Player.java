@@ -123,8 +123,10 @@ public class Player extends Thread {
                     } else if (query.equalsIgnoreCase("offline")) {
                         break;
                     } else if (query.equalsIgnoreCase("winner")) {
+                        System.out.println("Winner");
                         this.handleWinResult(outputStream, tokens);
                     } else if(query.equalsIgnoreCase("msg")) {
+
                         System.out.println("Player Receive Message");
                         this.receiveChatMsg(outputStream, tokens);
                     }

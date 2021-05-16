@@ -6,13 +6,14 @@
 package myproject.tictactoe;
 
 /**
- *
  * @author son
  */
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+
 import myproject.tictactoe.Utils.Pair;
 import myproject.tictactoe.Utils.utils;
 
@@ -66,7 +67,7 @@ public class ServerWorker extends Thread {
                     validUser = gameServer.getValidUser();
                     // tokens template: "login"
                     this.handleOnline(outputStream, tokens);
-                } else if(query.equalsIgnoreCase("create")) {
+                } else if (query.equalsIgnoreCase("create")) {
                     this.handleCreateAccount(outputStream, tokens);
 
                 }
@@ -81,9 +82,11 @@ public class ServerWorker extends Thread {
                         // tokens template: "logout"
                         this.handleOffline(outputStream, tokens);
                         break;
-                    } else if(query.equalsIgnoreCase("msg")) {
+                    } else if (query.equalsIgnoreCase("msg")) {
                         System.out.println("Server receive message from hahahahaha: " + tokens[1]);
                         this.handleMsg(outputStream, tokens);
+                    } else if (query.equalsIgnoreCase("winner")) {
+                        this.handleMatchResult(outputStream, tokens);
                     }
                 }
             }
@@ -97,13 +100,28 @@ public class ServerWorker extends Thread {
         clientSocket.close();
     }
 
+    private void handleMatchResult(OutputStream outputStream, String[] tokens) throws IOException {
+        ArrayList<ServerWorker> workerList = this.gameServer.getWorkerList();
+        String msg = "winner " + tokens[1] + "\n";
+
+        System.out.println("MSG: " + msg);
+        for (ServerWorker worker : workerList) {
+            if (!this.workerName.equalsIgnoreCase(worker.workerName)) {
+                System.out.println("Send match result to user: " + worker.workerName);
+                worker.outputStream.write(msg.getBytes());
+                worker.outputStream.flush();
+            }
+        }
+
+    }
+
     private void handleMsg(OutputStream outputStream, String[] tokens) throws IOException {
         ArrayList<ServerWorker> workerList = this.gameServer.getWorkerList();
-        if(tokens.length >= 3) {
+        if (tokens.length >= 3) {
             String msg = "";
-            for(int i = 0; i < tokens.length; i++){
+            for (int i = 0; i < tokens.length; i++) {
                 msg += (tokens[i] + " ");
-             }
+            }
             System.out.println("MSG: " + msg);
             for (ServerWorker worker : workerList) {
                 if (!this.workerName.equalsIgnoreCase(worker.workerName)) {
@@ -116,7 +134,7 @@ public class ServerWorker extends Thread {
     }
 
     private void handleCreateAccount(OutputStream outputStream, String[] tokens) {
-        if(tokens.length == 3){
+        if (tokens.length == 3) {
             System.out.println("Receive create account request from " + this.workerName);
 
             String userName = tokens[1];
