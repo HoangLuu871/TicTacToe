@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="RunServer:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/RunServer_jar</output-path>
+  <artifact type="jar" name="RunClients:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RunClients_jar</output-path>
     <root id="archive" name="TicTacToe.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
