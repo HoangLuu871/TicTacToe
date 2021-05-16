@@ -57,6 +57,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
 
                     if (game.checkWin(i, j, game.box[i][j].getText())) {
                         matchResults(this.player.symbol);
+                        this.player.isOpponentWin = false;
                         
                         try {
                             this.player.sendWinResult();

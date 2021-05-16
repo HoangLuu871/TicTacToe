@@ -65,5 +65,8 @@ public class Game {
                 new UIGame(game.player).setVisible(true);
             }
         });
+        
+        while(!player.isOpponentWin) continue;
+        
     }
 }

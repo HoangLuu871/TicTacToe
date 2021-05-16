@@ -41,6 +41,7 @@ public class Player extends Thread {
     public String opponentMove;
     public String opponentSymbol;
     public Color opponentColor;
+    public boolean isOpponentWin;
     
     // game board;
     public TicTacToe game;
@@ -53,6 +54,8 @@ public class Player extends Thread {
         this.isLogin = false;
         this.isStart = false;
         this.isConnect = false;
+        
+        this.isOpponentWin = false;
     }
 
     @Override
@@ -94,7 +97,7 @@ public class Player extends Thread {
                     this.symbol = tokens[3];
                     this.isTurn = this.symbol.equals("O");
                     
-                    this.playerColor = "X".equals(this.symbol) ? Color.red : Color.green;
+                    this.playerColor = "O".equals(this.symbol) ? Color.red : Color.green;
                     this.opponentColor = "X".equals(this.symbol) ? Color.red : Color.green;
                     
                     this.opponentSymbol = "X".equals(this.symbol) ? "O" : "X";
@@ -110,6 +113,8 @@ public class Player extends Thread {
                         this.receiveMove(outputStream, tokens); // receive move from opponent 
                     } else if (query.equalsIgnoreCase("offline")) {
                         break;
+                    } else if (query.equalsIgnoreCase("winner")) {
+                        this.handleWinResult(outputStream, tokens);
                     }
                 }
             }
@@ -188,9 +193,13 @@ public class Player extends Thread {
             return;
         }
         
-        String winMsg = "result " + this.userName + " winner\n";
+        String winMsg = "winner " + this.userName + "\n";
         this.outputStream.write(winMsg.getBytes());
         this.outputStream.flush();
         
+    }
+
+    private void handleWinResult(OutputStream outputStream, String[] tokens) {
+        this.isOpponentWin = true;
     }
 }

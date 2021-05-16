@@ -75,7 +75,7 @@ public class ServerWorker extends Thread {
                         this.handleMove(outputStream, tokens);
                     } else if (query.equalsIgnoreCase("logout")) {
                         // tokens template: "logout"
-                        handleOffline(outputStream, tokens);
+                        this.handleOffline(outputStream, tokens);
                         break;
                     }
                 }
