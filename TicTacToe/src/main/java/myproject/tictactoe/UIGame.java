@@ -21,6 +21,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
 
     public static TicTacToe game = new TicTacToe();
     private final Player player;
+    public static String chat = "";
 
     //action when play
     public void actionPerformed(ActionEvent e) {
@@ -115,7 +116,8 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
     }
 
     public void setChatMsg(String chatMsg) {
-        chatField.setText(chatMsg + "\n");
+        game.chatString += chatMsg;
+        chatField.setText(game.chatString);
     }
 
     /**
