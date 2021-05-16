@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 import myproject.tictactoe.Utils.utils;
 
 /**
- *
  * @author HLuu
  */
 public class UIGame extends javax.swing.JFrame implements ActionListener {
@@ -58,7 +57,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
                     if (game.checkWin(i, j, game.box[i][j].getText())) {
                         matchResults(this.player.symbol);
                         this.player.isOpponentWin = false;
-                        
+
                         try {
                             this.player.sendWinResult();
                         } catch (IOException ex) {
@@ -74,7 +73,6 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
     public UIGame(Player player) {
         this.player = player;
         this.player.game = game;
-        System.out.println("helloworld");
         initComponents();
         for (int i = 0; i < game.height; i++) {
             for (int j = 0; j < game.width; j++) {
@@ -90,8 +88,18 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
 
     public void matchResults(String symbol) {
         String matchInfo = this.player.symbol.equals(symbol) ? "Winner winner chicken dinner" : "Game Over";
-        JOptionPane.showMessageDialog(null, symbol + " win! Restart?", matchInfo, JOptionPane.INFORMATION_MESSAGE);
-        game.turn = 0;
+        int option = JOptionPane.showConfirmDialog(null, "Win! Restart?", matchInfo, JOptionPane.YES_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            for (int i1 = 0; i1 < game.height; i1++) {
+                for (int j1 = 0; j1 < game.width; j1++) {
+                    game.box[i1][j1].setText("");
+                    game.box[i1][j1].setBackground(Color.white);
+                }
+            }
+            game.turn = 0;
+        } else {
+            //logout
+        }
         game.clearMap();
     }
 
@@ -108,7 +116,11 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         chatFeildScroll = new javax.swing.JScrollPane();
         chatField = new javax.swing.JTextArea();
         typeBox = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        logo = new javax.swing.JLabel();
+        background = new javax.swing.JLabel();
+        logoutButton = new javax.swing.JButton();
+        showPlayer = new javax.swing.JTextField();
+        restartButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tic Tac Toe");
@@ -116,6 +128,38 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         setResizable(false);
         setSize(new java.awt.Dimension(1200, 700));
         getContentPane().setLayout(null);
+
+        restartButton.setBackground(new java.awt.Color(255, 255, 255));
+        restartButton.setFont(new java.awt.Font("Action Man Shaded", 1, 18)); // NOI18N
+        restartButton.setText("Restart");
+        restartButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
+        restartButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                restartButtonMousePressed(evt);
+            }
+        });
+        getContentPane().add(restartButton);
+        restartButton.setBounds(710, 320, 110, 40);
+
+        logoutButton.setBackground(new java.awt.Color(255, 255, 255));
+        logoutButton.setFont(new java.awt.Font("Action Man Shaded", 1, 20)); // NOI18N
+        logoutButton.setText("Logout");
+        logoutButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
+        logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                logoutButtonMousePressed(evt);
+            }
+        });
+        getContentPane().add(logoutButton);
+        logoutButton.setBounds(1060, 10, 110, 40);
+
+        showPlayer.setEditable(false);
+        showPlayer.setFont(new java.awt.Font("Action Man Shaded", 1, 24)); // NOI18N
+        showPlayer.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        showPlayer.setText("Username: You are X");
+        showPlayer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
+        getContentPane().add(showPlayer);
+        showPlayer.setBounds(210, 0, 310, 40);
 
         gamePanel.setBackground(new java.awt.Color(204, 0, 204));
         gamePanel.setPreferredSize(new java.awt.Dimension(600, 600));
@@ -150,8 +194,15 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         });
         getContentPane().add(typeBox);
         typeBox.setBounds(710, 590, 450, 40);
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(0, -10, 1210, 720);
+
+        logo.setIcon(new javax.swing.ImageIcon("logo tictactoe(edited).png")); // NOI18N
+        getContentPane().add(logo);
+        logo.setBounds(810, 10, 250, 350);
+
+        background.setIcon(new javax.swing.ImageIcon("background.png")); // NOI18N
+        getContentPane().add(background);
+        background.setBounds(0, -10, 1210, 720);
+
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -165,6 +216,25 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         }
     }//GEN-LAST:event_typeBoxKeyPressed
 
+    private void logoutButtonMousePressed(java.awt.event.MouseEvent evt) {
+        int option = JOptionPane.showConfirmDialog(null, "Do you want to logout?", "Logout", JOptionPane.YES_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            setVisible(false);
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new UIMenu().setVisible(true);
+                }
+            });
+        }
+    }
+
+    private void restartButtonMousePressed(java.awt.event.MouseEvent evt) {
+        int option = JOptionPane.showConfirmDialog(null, "Do you want to restart?", "Restart", JOptionPane.YES_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            //restart
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -172,7 +242,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
 //        /* Set the Nimbus look and feel */
 //        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 //        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
 //         */
 //        try {
 //            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -201,10 +271,14 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel background;
     private javax.swing.JScrollPane chatFeildScroll;
     private javax.swing.JTextArea chatField;
     private javax.swing.JPanel gamePanel;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel logo;
     private javax.swing.JTextField typeBox;
+    private javax.swing.JTextField showPlayer;
+    private javax.swing.JButton logoutButton;
+    private javax.swing.JButton restartButton;
     // End of variables declaration//GEN-END:variables
 }

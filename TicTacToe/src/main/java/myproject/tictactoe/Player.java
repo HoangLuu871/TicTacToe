@@ -77,7 +77,7 @@ public class Player extends Thread {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        this.login(outputStream, "son", "son");
+//        this.login(outputStream, "son", "son");
 
         String line = "";
         String query = "";
@@ -127,12 +127,12 @@ public class Player extends Thread {
         userSocket.close();
     }
 
-    public void login(OutputStream outputStream, String user, String password) throws IOException {
+    public void login(String user, String password) throws IOException {
         String clientMsg = "login " + user + " " + password + "\n";
         outputStream.write(clientMsg.getBytes());
     }
 
-    public void logoff(OutputStream outputStream) throws IOException {
+    public void logoff() throws IOException {
         String clientMsg = "logout\n";
         outputStream.write(clientMsg.getBytes());
         outputStream.flush();
@@ -182,10 +182,11 @@ public class Player extends Thread {
                     
                     // player turn;
                     this.isTurn = true;
-
                 }
             }
         }
+
+        if(!isTurn) System.out.println("Wrong move");
     }
     
     public void sendWinResult() throws IOException{

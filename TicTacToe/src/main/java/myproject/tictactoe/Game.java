@@ -22,8 +22,14 @@ public class Game {
         this.hostIP = hostIP;
     }
 
-    ;
-    
+    public int getPort() {
+        return port;
+    }
+
+    public String getHostIP() {
+        return hostIP;
+    }
+
     public static void main(String args[]) throws InterruptedException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -50,11 +56,7 @@ public class Game {
 //        Server gameServer = new Server("localhost", 3333);
 //        gameServer.start();
         /* Create and display the form */
-        Game game = new Game(3333, "localhost");
 
-        game.player = new Player(game.port, game.hostIP);
-
-        game.player.start();
 
 //        if (!game.player.isConnect) {
 //            return;
@@ -62,11 +64,10 @@ public class Game {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UIGame(game.player).setVisible(true);
+                new UIConnect().setVisible(true);
             }
+
         });
-        
-        while(!player.isOpponentWin) continue;
         
     }
 }
