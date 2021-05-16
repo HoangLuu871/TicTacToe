@@ -113,7 +113,7 @@ public class UIMenu extends javax.swing.JFrame {
         getContentPane().add(inputUsername);
         inputUsername.setBounds(480, 460, 240, 30);
 
-        logo.setIcon(new javax.swing.ImageIcon("logo tictactoe(edited).png")); // NOI18N
+        logo.setIcon(new javax.swing.ImageIcon(this.getClass().getResource("/logo tictactoe(edited).png"))); // NOI18N
         getContentPane().add(logo);
         logo.setBounds(480, 30, 260, 350);
 
@@ -172,7 +172,7 @@ public class UIMenu extends javax.swing.JFrame {
         getContentPane().add(loginButton);
         loginButton.setBounds(525, 390, 150, 50);
 
-        background.setIcon(new javax.swing.ImageIcon("background.png")); // NOI18N
+        background.setIcon(new javax.swing.ImageIcon(this.getClass().getResource("/background.png"))); // NOI18N
         background.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 backgroundMousePressed(evt);

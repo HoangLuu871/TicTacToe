@@ -83,11 +83,11 @@ public class UIConnect extends javax.swing.JFrame {
         getContentPane().add(connectButton);
         connectButton.setBounds(525, 590, 150, 50);
 
-        logo.setIcon(new javax.swing.ImageIcon("logo tictactoe(edited).png")); // NOI18N
+        logo.setIcon(new javax.swing.ImageIcon(this.getClass().getResource("/logo tictactoe(edited).png"))); // NOI18N
         getContentPane().add(logo);
         logo.setBounds(480, 30, 260, 350);
 
-        background.setIcon(new javax.swing.ImageIcon("background.png")); // NOI18N
+        background.setIcon(new javax.swing.ImageIcon(this.getClass().getResource("/background.png"))); // NOI18N
         getContentPane().add(background);
         background.setBounds(0, -10, 1210, 720);
 

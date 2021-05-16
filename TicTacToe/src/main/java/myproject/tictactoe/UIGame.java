@@ -220,11 +220,11 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         getContentPane().add(typeBox);
         typeBox.setBounds(710, 590, 450, 40);
 
-        logo.setIcon(new javax.swing.ImageIcon("logo tictactoe(edited).png")); // NOI18N
+        logo.setIcon(new javax.swing.ImageIcon(this.getClass().getResource("/logo tictactoe(edited).png"))); // NOI18N
         getContentPane().add(logo);
         logo.setBounds(810, 10, 250, 350);
 
-        background.setIcon(new javax.swing.ImageIcon("background.png")); // NOI18N
+        background.setIcon(new javax.swing.ImageIcon(this.getClass().getResource("/background.png"))); // NOI18N
         getContentPane().add(background);
         background.setBounds(0, -10, 1210, 720);
 

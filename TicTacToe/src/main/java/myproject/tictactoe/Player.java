@@ -123,7 +123,7 @@ public class Player extends Thread {
                     } else if (query.equalsIgnoreCase("offline")) {
                         break;
                     } else if (query.equalsIgnoreCase("winner")) {
-                        System.out.println("Winner");
+                        System.out.println("Winner from other user");
                         this.handleWinResult(outputStream, tokens);
                     } else if(query.equalsIgnoreCase("msg")) {
 
@@ -247,6 +247,7 @@ public class Player extends Thread {
 
     private void handleWinResult(OutputStream outputStream, String[] tokens) throws IOException {
         this.isOpponentWin = true;
+        System.out.println("Win inside");
         this.gameUI.matchResults(this.opponentSymbol);
     }
 
