@@ -14,6 +14,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import myproject.tictactoe.Utils.Pair;
+import myproject.tictactoe.Utils.utils;
 
 public class ServerWorker extends Thread {
 
@@ -65,6 +66,9 @@ public class ServerWorker extends Thread {
                     validUser = gameServer.getValidUser();
                     // tokens template: "login"
                     this.handleOnline(outputStream, tokens);
+                } else if(query.equalsIgnoreCase("create")) {
+                    this.handleCreateAccount(outputStream, tokens);
+
                 }
 
                 // if user login, user can use below commands;
@@ -77,6 +81,9 @@ public class ServerWorker extends Thread {
                         // tokens template: "logout"
                         this.handleOffline(outputStream, tokens);
                         break;
+                    } else if(query.equalsIgnoreCase("msg")) {
+                        System.out.println("Server receive message from hahahahaha: " + tokens[1]);
+                        this.handleMsg(outputStream, tokens);
                     }
                 }
             }
@@ -88,6 +95,43 @@ public class ServerWorker extends Thread {
         outputStream.close();
 
         clientSocket.close();
+    }
+
+    private void handleMsg(OutputStream outputStream, String[] tokens) throws IOException {
+        ArrayList<ServerWorker> workerList = this.gameServer.getWorkerList();
+        if(tokens.length >= 3) {
+            String msg = "";
+            for(int i = 0; i < tokens.length; i++){
+                msg += (tokens[i] + " ");
+             }
+            System.out.println("MSG: " + msg);
+            for (ServerWorker worker : workerList) {
+                if (!this.workerName.equalsIgnoreCase(worker.workerName)) {
+                    System.out.println("Send chat message to user: " + worker.workerName);
+                    worker.outputStream.write((msg + "\n").getBytes());
+                    worker.outputStream.flush();
+                }
+            }
+        }
+    }
+
+    private void handleCreateAccount(OutputStream outputStream, String[] tokens) {
+        if(tokens.length == 3){
+            System.out.println("Receive create account request from " + this.workerName);
+
+            String userName = tokens[1];
+            String password = tokens[2];
+            utils.writeFile("userDataBase.txt", userName + " " + password);
+            utils.writeFile("src/main/java/userDataBase.txt", userName + " " + password); // bug so we have to write two times
+
+            this.gameServer.setValidUser();
+
+
+        } else {
+            System.out.println("Create account not success");
+            String createMsg = "";
+        }
+
     }
 
     private void handleOffline(OutputStream outputStream, String[] tokens) throws IOException {

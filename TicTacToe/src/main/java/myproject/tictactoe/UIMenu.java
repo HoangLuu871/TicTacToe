@@ -5,6 +5,8 @@
  */
 package myproject.tictactoe;
 
+import myproject.tictactoe.Utils.utils;
+
 import java.io.IOException;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
@@ -131,7 +133,12 @@ public class UIMenu extends javax.swing.JFrame {
         createButtonMode.setText("Create");
         createButtonMode.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                createButtonModeMousePressed(evt);
+                try {
+                    createButtonModeMousePressed(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
         getContentPane().add(createButtonMode);
@@ -191,7 +198,7 @@ public class UIMenu extends javax.swing.JFrame {
             String password = String.valueOf(inputPass.getPassword()).strip();
             game.player.login(userName, password); // login with user password
 
-            Thread.sleep(3000); // waiting for server to check login account and response
+            Thread.sleep(1000); // waiting for server to check login account and response
             if(game.player.isLogin){
                 setVisible(false);
                 java.awt.EventQueue.invokeLater(new Runnable() {
@@ -200,7 +207,7 @@ public class UIMenu extends javax.swing.JFrame {
                     }
                 });
             } else {
-                JOptionPane.showMessageDialog(null, "You need to enter username and password", "Invalid login", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Wrong username or password", "Invalid login", JOptionPane.INFORMATION_MESSAGE);
                 inputUsername.setText("");
                 inputPass.setText("");
             }
@@ -224,7 +231,7 @@ public class UIMenu extends javax.swing.JFrame {
         inputRePass.setVisible(false);
     }
 
-    private void createButtonModeMousePressed(java.awt.event.MouseEvent evt) {
+    private void createButtonModeMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         if (inputUsername.getText().equals("") || String.valueOf(inputPass.getPassword()).equals("")) {
             JOptionPane.showMessageDialog(null, "You need to enter username and password", "Invalid create", JOptionPane.INFORMATION_MESSAGE);
             inputUsername.setText("");
@@ -237,7 +244,13 @@ public class UIMenu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Your account has been created", "Create successfully", JOptionPane.INFORMATION_MESSAGE);
             /*add account to file
                 here
+
              */
+            String userName = inputUsername.getText().strip();
+            String password = String.valueOf(inputPass.getPassword()).strip();
+
+            game.player.createAccount(userName + " " + password);
+
             createButtonMode.setVisible(false);
             loginButtonMode.setVisible(false);
             repassword.setVisible(false);

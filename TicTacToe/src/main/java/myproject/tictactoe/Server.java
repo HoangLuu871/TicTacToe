@@ -21,7 +21,7 @@ public class Server extends Thread {
     private int port;
     private String ip;
 
-    public static final int maxPlayer = 2; // num player can connect 
+    public static final int maxPlayer = 2; // num player can connect
     public int currentNumPlayer;
     public String[] playerSymbols = {"X", "O"};
 
@@ -57,7 +57,7 @@ public class Server extends Thread {
         return this.validUser;
     }
 
-    private void setValidUser() {
+    public void setValidUser() {
         File info = new File(this.fileName);
 
         try {
@@ -88,7 +88,7 @@ public class Server extends Thread {
                 Socket clientServeSocket = serverSocket.accept(); // give each client a socket to communicate
 
                 this.currentNumPlayer++;
-                String playerSymbol = playerSymbols[this.currentNumPlayer - 1];
+                String playerSymbol = playerSymbols[(this.currentNumPlayer - 1) % 2];
 
                 System.out.println("Accepted connection from " + clientServeSocket);
 
