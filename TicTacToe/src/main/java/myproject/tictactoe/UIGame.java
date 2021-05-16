@@ -36,11 +36,9 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
             for (int j = 0; j < game.width; j++) {
                 // check object to string because its easy to send into socket
                 String coords = utils.getCoords(e.getSource().toString());
-                System.out.println(coords);
                 if (coords.equals(utils.getCoords(game.box[i][j].toString()))
                         && game.box[i][j].getText() != "X"
                         && game.box[i][j].getText() != "O") {
-                    System.out.println(e.getSource());
 
                     game.box[i][j].setText(this.player.symbol);
                     game.box[i][j].setFont(new java.awt.Font("Stabillo Medium", 1, 23));
@@ -55,7 +53,11 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
                     }
 
                     if (game.checkWin(i, j, game.box[i][j].getText())) {
-                        matchResults(this.player.symbol);
+                        try {
+                            matchResults(this.player.symbol);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
                         this.player.isOpponentWin = false;
 
                         try {
@@ -84,11 +86,14 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
             }
         }
         setLocationRelativeTo(null);
+
+        // fool usage ...
+        this.player.gameUI = this;
     }
 
-    public void matchResults(String symbol) {
+    public void matchResults(String symbol) throws IOException {
         String matchInfo = this.player.symbol.equals(symbol) ? "Winner winner chicken dinner" : "Game Over";
-        int option = JOptionPane.showConfirmDialog(null, "Win! Restart?", matchInfo, JOptionPane.YES_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, "Restart?", matchInfo, JOptionPane.YES_OPTION);
         if (option == JOptionPane.YES_OPTION) {
             for (int i1 = 0; i1 < game.height; i1++) {
                 for (int j1 = 0; j1 < game.width; j1++) {
@@ -98,9 +103,19 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
             }
             game.turn = 0;
         } else {
-            //logout
+            setVisible(false);
+            this.player.logoff();
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new UIConnect().setVisible(true);
+                }
+            });
         }
         game.clearMap();
+    }
+
+    public void setChatMsg(String chatMsg) {
+        chatField.setText(chatMsg + "\n");
     }
 
     /**
@@ -147,7 +162,11 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         logoutButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
         logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                logoutButtonMousePressed(evt);
+                try {
+                    logoutButtonMousePressed(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         getContentPane().add(logoutButton);
@@ -189,7 +208,11 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         typeBox.setSelectionColor(new java.awt.Color(0, 0, 0));
         typeBox.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                typeBoxKeyPressed(evt);
+                try {
+                    typeBoxKeyPressed(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         getContentPane().add(typeBox);
@@ -208,21 +231,24 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
     }// </editor-fold>//GEN-END:initComponents
 
     //press enter in type box to chat
-    private void typeBoxKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_typeBoxKeyPressed
+    private void typeBoxKeyPressed(java.awt.event.KeyEvent evt) throws IOException {//GEN-FIRST:event_typeBoxKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            game.chatString += (typeBox.getText() + "\n"); //set new chat string
+            game.chatString += (this.player.userName + ": " + typeBox.getText() + "\n"); //set new chat string
+            this.player.sendChatMsg(typeBox.getText().strip());
             chatField.setText(game.chatString); //show chat dialog to chatField
             typeBox.setText("");
         }
     }//GEN-LAST:event_typeBoxKeyPressed
 
-    private void logoutButtonMousePressed(java.awt.event.MouseEvent evt) {
+    private void logoutButtonMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         int option = JOptionPane.showConfirmDialog(null, "Do you want to logout?", "Logout", JOptionPane.YES_OPTION);
+
         if (option == JOptionPane.YES_OPTION) {
             setVisible(false);
+            this.player.logoff();
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new UIMenu().setVisible(true);
+                    new UIConnect().setVisible(true);
                 }
             });
         }
@@ -232,6 +258,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
         int option = JOptionPane.showConfirmDialog(null, "Do you want to restart?", "Restart", JOptionPane.YES_OPTION);
         if (option == JOptionPane.YES_OPTION) {
             //restart
+            game.clearMap();
         }
     }
 
@@ -280,5 +307,7 @@ public class UIGame extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JTextField showPlayer;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton restartButton;
+
+
     // End of variables declaration//GEN-END:variables
 }

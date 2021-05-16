@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 
 import static myproject.tictactoe.UIGame.game;
@@ -45,6 +46,12 @@ public class Player extends Thread {
     
     // game board;
     public TicTacToe game;
+
+    // persist user thread;
+    public boolean isExit;
+
+    // fool usage :(((
+    public UIGame gameUI;
     
 
     public Player(int port, String ip) {
@@ -56,6 +63,8 @@ public class Player extends Thread {
         this.isConnect = false;
         
         this.isOpponentWin = false;
+
+        this.isExit = false;
     }
 
     @Override
@@ -82,7 +91,7 @@ public class Player extends Thread {
         String line = "";
         String query = "";
         
-        while ((line = reader.readLine()) != null) {
+        while ((line = reader.readLine()) != null && !this.isExit) {
             String[] tokens = line.split(" ");
 
             if (tokens != null && tokens.length > 0) {
@@ -115,6 +124,9 @@ public class Player extends Thread {
                         break;
                     } else if (query.equalsIgnoreCase("winner")) {
                         this.handleWinResult(outputStream, tokens);
+                    } else if(query.equalsIgnoreCase("msg")) {
+                        System.out.println("Player Receive Message");
+                        this.receiveChatMsg(outputStream, tokens);
                     }
                 }
             }
@@ -125,6 +137,38 @@ public class Player extends Thread {
         inputStream.close();
         outputStream.close();
         userSocket.close();
+    }
+
+    public void terminatePlayer() {
+        this.isExit = true;
+    }
+
+    public void receiveChatMsg(OutputStream outputStream, String[] tokens) {
+        if(tokens.length >= 3) {
+            System.out.println("Receive messageeeeee");
+            String userName = tokens[1];
+            StringBuilder message = new StringBuilder("");
+
+            message.append(userName + ": ");
+            for(int i = 2; i < tokens.length; i++) {
+                message.append(tokens[i] + " ");
+            }
+
+            message.append("\n");
+            String messageStr = message.toString();
+            System.out.println("Message: " + messageStr);
+            this.gameUI.setChatMsg(messageStr);
+        }
+    }
+
+    public void sendChatMsg(String chatMsg) throws IOException {
+        if (this.outputStream == null) {
+            return;
+        }
+
+        String cMsg = "msg " + this.userName + " " + chatMsg + "\n";
+        this.outputStream.write(cMsg.getBytes());
+        this.outputStream.flush();
     }
 
     public void login(String user, String password) throws IOException {
@@ -166,7 +210,6 @@ public class Player extends Thread {
     }
     
     public void getOpponentPos(TicTacToe game) {
-        System.out.println("hellooooooo");
         System.out.println(this.opponentMove);
 
         for (int i = 0; i < game.height; i++) {
@@ -200,7 +243,18 @@ public class Player extends Thread {
         
     }
 
-    private void handleWinResult(OutputStream outputStream, String[] tokens) {
+    private void handleWinResult(OutputStream outputStream, String[] tokens) throws IOException {
         this.isOpponentWin = true;
+        this.gameUI.matchResults(this.opponentSymbol);
+    }
+
+    public void createAccount(String account) throws IOException {
+        if (this.outputStream == null) {
+            return;
+        }
+
+        String createMsg = "create " + account + "\n";
+        this.outputStream.write(createMsg.getBytes());
+        this.outputStream.flush();
     }
 }

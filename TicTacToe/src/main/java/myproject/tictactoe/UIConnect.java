@@ -102,15 +102,30 @@ public class UIConnect extends javax.swing.JFrame {
         } else {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
+
                     menu = new UIMenu();
-                    menu.setVisible(true);
-                    menu.game = new Game(Integer.parseInt(inputPort.getText().strip()), inputIP.getText());
+                    menu.game = new Game(Integer.parseInt(inputPort.getText().strip()), inputIP.getText().strip());
                     menu.game.player = new Player(menu.game.getPort(), menu.game.getHostIP());
                     menu.game.player.start();
 
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(menu.game.player.isConnect) {
+                        menu.setVisible(true);
+                        setVisible(false);
+                    }
+
+                    else {
+                        JOptionPane.showMessageDialog(null, "Wrong port or host ip", "Invalid connect", JOptionPane.INFORMATION_MESSAGE);
+                        menu.game.player.terminatePlayer();
+                        return; // end game if host not exist
+                    }
                 }
             });
-            setVisible(false);
+
         }
     }
 
